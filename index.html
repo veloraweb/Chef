@@ -1,0 +1,1735 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta
+        name="description"
+        content="VELYTA'S — The Chef's Table. A private interactive restaurant experience made especially for Velyta."
+    >
+    <meta name="theme-color" content="#171112">
+
+    <title>VELYTA'S — Chef's Table</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=DM+Sans:wght@400;600&family=Pacifico&display=swap"
+        rel="stylesheet"
+    >
+
+    <style>
+        /* =========================================================
+           01. DESIGN TOKENS
+           ========================================================= */
+        :root {
+            --color-dark: #171112;
+            --color-dark-soft: #101011;
+            --color-wine: #671a2a;
+            --color-wine-dark: #270b12;
+            --color-red: #a92c43;
+            --color-gold: #d3ae67;
+            --color-cream: #fff5e4;
+            --color-paper: #fffaf0;
+            --color-paper-dark: #f3e4c8;
+            --color-text: #302123;
+            --color-muted: #a99b96;
+            --color-border: #dfcda9;
+
+            --font-display: "Cormorant Garamond", serif;
+            --font-script: "Pacifico", cursive;
+            --font-body: "DM Sans", sans-serif;
+
+            --nav-height: 64px;
+            --section-padding: 105px 6%;
+
+            --shadow-card: 0 20px 50px rgba(0, 0, 0, 0.12);
+            --shadow-dark: 0 30px 60px rgba(0, 0, 0, 0.50);
+
+            --radius-sm: 9px;
+            --radius-md: 14px;
+            --radius-lg: 18px;
+        }
+
+        /* =========================================================
+           02. RESET / BASE
+           ========================================================= */
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: calc(var(--nav-height) + 20px);
+        }
+
+        body {
+            min-width: 320px;
+            margin: 0;
+            background: var(--color-dark);
+            color: var(--color-cream);
+            font-family: var(--font-body);
+        }
+
+        body.modal-open {
+            overflow: hidden;
+        }
+
+        button,
+        a {
+            font: inherit;
+        }
+
+        button {
+            appearance: none;
+            border: 0;
+            cursor: pointer;
+        }
+
+        button:focus-visible,
+        a:focus-visible {
+            outline: 2px solid var(--color-gold);
+            outline-offset: 4px;
+        }
+
+        img {
+            max-width: 100%;
+        }
+
+        p {
+            margin: 0;
+            color: var(--color-muted);
+            font-size: 10px;
+            line-height: 2.1;
+        }
+
+        /* =========================================================
+           03. SHARED COMPONENTS
+           ========================================================= */
+        .wrap {
+            width: min(1050px, 100%);
+            margin-inline: auto;
+        }
+
+        .center {
+            text-align: center;
+        }
+
+        .eyebrow {
+            color: var(--color-gold);
+            font-size: 7px;
+            font-weight: 600;
+            letter-spacing: 6px;
+            line-height: 1.5;
+        }
+
+        .title {
+            margin: 20px 0;
+            color: inherit;
+            font: 600 clamp(60px, 9vw, 110px) / 0.7 var(--font-display);
+        }
+
+        .title span,
+        h1 span {
+            display: block;
+            color: var(--color-gold);
+            font-family: var(--font-script);
+            font-size: 0.7em;
+            line-height: 1.4;
+        }
+
+        .cta {
+            margin: 8px;
+            padding: 13px 22px;
+            border: 1px solid var(--color-gold);
+            background: var(--color-gold);
+            color: #211516;
+            font-size: 7px;
+            letter-spacing: 3px;
+            transition:
+                transform 180ms ease,
+                background-color 180ms ease,
+                color 180ms ease,
+                box-shadow 180ms ease;
+        }
+
+        .cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(211, 174, 103, 0.20);
+        }
+
+        .cta.alt {
+            background: transparent;
+            color: var(--color-gold);
+        }
+
+        .cta.alt:hover {
+            background: var(--color-gold);
+            color: #211516;
+        }
+
+        .card {
+            padding: 25px;
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-md);
+            background: var(--color-paper);
+            color: var(--color-text);
+            box-shadow: var(--shadow-card);
+        }
+
+        .btn {
+            margin-top: 15px;
+            padding: 11px 18px;
+            background: var(--color-wine);
+            color: #fff;
+            font-size: 7px;
+            letter-spacing: 2px;
+            transition: transform 180ms ease, opacity 180ms ease;
+        }
+
+        .btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+        }
+
+        .btn:disabled {
+            cursor: not-allowed;
+            opacity: 0.45;
+        }
+
+        section {
+            position: relative;
+            min-height: 100vh;
+            padding: var(--section-padding);
+        }
+
+        /* =========================================================
+           04. NAVIGATION
+           ========================================================= */
+        .nav {
+            position: fixed;
+            z-index: 9999;
+            top: 0;
+            right: 0;
+            left: 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: var(--nav-height);
+            padding: 0 5%;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.09);
+            background: rgba(12, 8, 9, 0.94);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+
+        .logo {
+            color: #fff;
+            font: 600 25px var(--font-display);
+            letter-spacing: 4px;
+            white-space: nowrap;
+        }
+
+        .logo b {
+            color: var(--color-gold);
+        }
+
+        .navlinks {
+            display: flex;
+            gap: 8px;
+        }
+
+        .navlinks button {
+            padding: 8px 12px;
+            border: 1px solid rgba(255, 255, 255, 0.19);
+            background: rgba(255, 255, 255, 0.03);
+            color: #fff;
+            font-size: 7px;
+            letter-spacing: 2px;
+            transition:
+                background-color 180ms ease,
+                border-color 180ms ease,
+                color 180ms ease;
+        }
+
+        .navlinks button:hover {
+            border-color: rgba(211, 174, 103, 0.55);
+            background: rgba(211, 174, 103, 0.10);
+            color: var(--color-gold);
+        }
+
+        .nav-toggle {
+            display: none;
+            width: 42px;
+            height: 38px;
+            border: 1px solid rgba(255, 255, 255, 0.20);
+            background: transparent;
+            color: #fff;
+            font-size: 18px;
+        }
+
+        .mobile-nav {
+            display: none;
+        }
+
+        /* =========================================================
+           05. HERO
+           ========================================================= */
+        .hero {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            background:
+                radial-gradient(circle at 50% 25%, #692d39 0%, #1b1114 55%, #080708 100%);
+            text-align: center;
+        }
+
+        .hero > * {
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero h1 {
+            margin: 25px 0;
+            font: 600 clamp(70px, 12vw, 145px) / 0.68 var(--font-display);
+        }
+
+        .hero-copy {
+            width: min(520px, 100%);
+            margin-inline: auto;
+        }
+
+        .pan {
+            position: absolute;
+            right: 6%;
+            bottom: 7%;
+            z-index: 1;
+            color: #fff;
+            font-size: 100px;
+            opacity: 0.12;
+            user-select: none;
+        }
+
+        /* =========================================================
+           06. WELCOME / RESERVATION
+           ========================================================= */
+        .light {
+            background: var(--color-cream);
+            color: var(--color-text);
+        }
+
+        .res {
+            max-width: 380px;
+            margin: 30px auto;
+            text-align: center;
+        }
+
+        .res small {
+            display: block;
+            color: #9b7b49;
+            font-size: 6px;
+            letter-spacing: 4px;
+        }
+
+        .res strong {
+            display: block;
+            margin: 8px;
+            font: 600 27px var(--font-display);
+        }
+
+        /* =========================================================
+           07. KITCHEN GAME
+           ========================================================= */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 25px;
+            margin-top: 45px;
+        }
+
+        .card-title {
+            margin: 0;
+            color: var(--color-wine);
+            font: 600 30px var(--font-display);
+        }
+
+        .ingredients {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 8px;
+            margin-top: 20px;
+        }
+
+        .ing {
+            min-height: 76px;
+            padding: 12px 3px;
+            border: 1px solid #dfcfb5;
+            border-radius: var(--radius-sm);
+            background: #fff;
+            color: var(--color-text);
+            transition:
+                transform 180ms ease,
+                background-color 180ms ease,
+                border-color 180ms ease;
+        }
+
+        .ing:hover {
+            transform: translateY(-3px);
+        }
+
+        .ing.active {
+            border-color: var(--color-gold);
+            background: #ead5a6;
+        }
+
+        .ing b {
+            display: block;
+            font-size: 27px;
+            line-height: 1.2;
+        }
+
+        .ing small {
+            font-size: 6px;
+        }
+
+        .selected {
+            min-height: 55px;
+            margin-top: 14px;
+            padding: 12px;
+            background: #f0e6d5;
+            color: #756a66;
+            font-size: 8px;
+            line-height: 1.7;
+        }
+
+        .stove {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 260px;
+        }
+
+        .pan2 {
+            position: relative;
+            width: 220px;
+            height: 70px;
+            border: 8px solid #777;
+            border-radius: 50%;
+            background: #222;
+        }
+
+        .pan2::after {
+            position: absolute;
+            top: 20px;
+            right: -95px;
+            width: 95px;
+            height: 16px;
+            border-radius: 10px;
+            background: #444;
+            content: "";
+        }
+
+        .flame,
+        .food {
+            position: absolute;
+            opacity: 0;
+            transition: opacity 300ms ease;
+        }
+
+        .flame {
+            bottom: 30px;
+            font-size: 42px;
+        }
+
+        .food {
+            font-size: 40px;
+        }
+
+        .flame.on,
+        .food.show {
+            opacity: 1;
+        }
+
+        .status {
+            min-height: 20px;
+            color: var(--color-red);
+            font-size: 9px;
+            text-align: center;
+        }
+
+        /* =========================================================
+           08. RECIPE
+           ========================================================= */
+        .wine {
+            background: linear-gradient(135deg, var(--color-wine), var(--color-wine-dark));
+        }
+
+        .recipebook {
+            max-width: 850px;
+            margin: 40px auto;
+            padding: 35px;
+            background: var(--color-paper-dark);
+            color: #2b1c1d;
+        }
+
+        .recipebook h3 {
+            margin: 0 0 20px;
+            color: var(--color-wine);
+            font: 600 45px var(--font-display);
+            text-align: center;
+        }
+
+        .recipes {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .recipe {
+            padding: 15px;
+            border-bottom: 1px solid #d4bd91;
+        }
+
+        .recipe strong {
+            color: var(--color-wine);
+            font: 600 21px var(--font-display);
+        }
+
+        .recipe p {
+            color: #675856;
+        }
+
+        /* =========================================================
+           09. PLATING GAME
+           ========================================================= */
+        .dark {
+            background: var(--color-dark-soft);
+        }
+
+        .plategrid {
+            display: grid;
+            grid-template-columns: 220px minmax(0, 1fr);
+            gap: 25px;
+            margin-top: 45px;
+        }
+
+        .foodlist {
+            display: grid;
+            align-content: start;
+            gap: 8px;
+        }
+
+        .foodlist button {
+            padding: 13px;
+            border: 1px solid #55464a;
+            background: #211b1c;
+            color: #fff;
+            text-align: left;
+            transition:
+                transform 180ms ease,
+                border-color 180ms ease,
+                opacity 180ms ease;
+        }
+
+        .foodlist button:hover:not(:disabled) {
+            transform: translateX(3px);
+            border-color: var(--color-gold);
+        }
+
+        .foodlist button:disabled {
+            cursor: not-allowed;
+            opacity: 0.35;
+        }
+
+        .platearea {
+            display: grid;
+            min-height: 450px;
+            place-items: center;
+            border: 1px solid #58454a;
+            border-radius: var(--radius-lg);
+            background: radial-gradient(circle, #292626, #111);
+        }
+
+        .plate {
+            position: relative;
+            width: 330px;
+            height: 330px;
+            border: 12px solid #c8baa4;
+            border-radius: 50%;
+            background: #eee5d7;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.53);
+        }
+
+        .platefood {
+            position: absolute;
+            font-size: 45px;
+            transform: translate(-50%, -50%);
+            animation: plateIn 350ms ease both;
+        }
+
+        @keyframes plateIn {
+            from {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0.5);
+            }
+
+            to {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
+            }
+        }
+
+        .platecount {
+            margin-top: 12px;
+            color: var(--color-gold);
+            font-size: 8px;
+            text-align: center;
+        }
+
+        /* =========================================================
+           10. MEMORIES
+           ========================================================= */
+        .photos {
+            background: #eadfce;
+            color: #211718;
+        }
+
+        .photosgrid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 22px;
+            margin-top: 45px;
+        }
+
+        .photo {
+            margin: 0;
+            padding: 10px 10px 18px;
+            background: #fff9ec;
+            box-shadow: 0 20px 45px rgba(0, 0, 0, 0.12);
+            cursor: pointer;
+            transition: transform 200ms ease, box-shadow 200ms ease;
+        }
+
+        .photo:hover {
+            transform: translateY(-5px) rotate(-0.5deg);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.17);
+        }
+
+        .photo img {
+            display: block;
+            width: 100%;
+            height: 330px;
+            object-fit: cover;
+        }
+
+        .photo figcaption {
+            margin-top: 10px;
+            color: var(--color-wine);
+            font: 26px var(--font-script);
+            text-align: center;
+        }
+
+        /* =========================================================
+           11. DINNER
+           ========================================================= */
+        .dinner {
+            display: grid;
+            place-items: center;
+            background:
+                radial-gradient(circle at 50% 20%, #5a302e, #171010 65%);
+            text-align: center;
+        }
+
+        .table {
+            position: relative;
+            width: min(580px, 90vw);
+            height: 150px;
+            margin: 35px auto;
+            border: 7px solid #5b412c;
+            border-radius: 50%;
+            background: radial-gradient(ellipse, #60332c, #271615);
+            box-shadow: var(--shadow-dark);
+        }
+
+        .candle {
+            position: absolute;
+            top: 45%;
+            left: 50%;
+            font-size: 55px;
+            transform: translate(-50%, -50%);
+        }
+
+        /* =========================================================
+           12. FINAL SECTION
+           ========================================================= */
+        .final {
+            display: grid;
+            place-items: center;
+            background: var(--color-cream);
+            color: var(--color-text);
+            text-align: center;
+        }
+
+        .signature {
+            margin-top: 25px;
+            color: var(--color-wine);
+            font: 38px var(--font-script);
+        }
+
+        /* =========================================================
+           13. POPUP / MODAL
+           ========================================================= */
+        .popup {
+            position: fixed;
+            z-index: 20000;
+            inset: 0;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.73);
+        }
+
+        .popup.open {
+            display: flex;
+        }
+
+        .popupbox {
+            width: min(600px, 100%);
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 35px;
+            border: 5px solid var(--color-gold);
+            background: var(--color-cream);
+            color: var(--color-text);
+            text-align: center;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.45);
+            animation: modalIn 220ms ease both;
+        }
+
+        @keyframes modalIn {
+            from {
+                opacity: 0;
+                transform: translateY(12px) scale(0.98);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .popupbox h2 {
+            margin: 0 0 15px;
+            color: var(--color-wine);
+            font: 600 45px var(--font-display);
+        }
+
+        .popupbox p {
+            color: #594b49;
+            font: 20px / 1.7 var(--font-display);
+        }
+
+        .popup-image {
+            display: block;
+            width: auto;
+            max-width: 100%;
+            max-height: 55vh;
+            margin: 0 auto 18px;
+            object-fit: contain;
+        }
+
+        .close {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background: var(--color-wine);
+            color: #fff;
+            font-size: 7px;
+            letter-spacing: 2px;
+        }
+
+        /* =========================================================
+           14. MUSIC
+           ========================================================= */
+        .music {
+            position: fixed;
+            z-index: 10000;
+            right: 18px;
+            bottom: 18px;
+            width: 52px;
+            height: 52px;
+            border: 1px solid var(--color-gold);
+            border-radius: 50%;
+            background: #161112;
+            color: var(--color-gold);
+            font-size: 19px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.30);
+            transition: transform 180ms ease, background-color 180ms ease;
+        }
+
+        .music:hover {
+            transform: scale(1.05);
+            background: #211719;
+        }
+
+        /* =========================================================
+           15. RESPONSIVE
+           ========================================================= */
+        @media (max-width: 760px) {
+            :root {
+                --section-padding: 95px 5% 80px;
+            }
+
+            .navlinks {
+                display: none;
+            }
+
+            .nav-toggle {
+                display: block;
+            }
+
+            .mobile-nav {
+                position: fixed;
+                z-index: 9998;
+                top: var(--nav-height);
+                right: 0;
+                left: 0;
+                display: none;
+                padding: 12px 5%;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.09);
+                background: rgba(12, 8, 9, 0.97);
+                backdrop-filter: blur(12px);
+                -webkit-backdrop-filter: blur(12px);
+            }
+
+            .mobile-nav.open {
+                display: grid;
+                gap: 7px;
+            }
+
+            .mobile-nav button {
+                padding: 12px;
+                border: 1px solid rgba(255, 255, 255, 0.14);
+                background: rgba(255, 255, 255, 0.03);
+                color: #fff;
+                font-size: 8px;
+                letter-spacing: 2px;
+                text-align: left;
+            }
+
+            .grid,
+            .plategrid,
+            .photosgrid,
+            .recipes {
+                grid-template-columns: 1fr;
+            }
+
+            .ingredients {
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+            }
+
+            .plate {
+                width: 280px;
+                height: 280px;
+            }
+
+            .platearea {
+                min-height: 380px;
+            }
+
+            .photo img {
+                height: min(420px, 75vw);
+            }
+
+            .recipebook {
+                padding: 25px 20px;
+            }
+
+            .recipebook h3 {
+                font-size: 38px;
+            }
+
+            .popupbox {
+                padding: 25px 20px;
+            }
+
+            .popupbox h2 {
+                font-size: 36px;
+            }
+        }
+
+        @media (max-width: 430px) {
+            .logo {
+                font-size: 21px;
+                letter-spacing: 3px;
+            }
+
+            .hero h1 {
+                font-size: clamp(58px, 18vw, 85px);
+            }
+
+            .title {
+                font-size: clamp(48px, 15vw, 70px);
+            }
+
+            .ingredients {
+                gap: 6px;
+            }
+
+            .ing {
+                min-height: 70px;
+            }
+
+            .pan {
+                right: 2%;
+                bottom: 4%;
+                font-size: 70px;
+            }
+
+            .music {
+                right: 14px;
+                bottom: 14px;
+            }
+        }
+
+        /* =========================================================
+           16. REDUCED MOTION
+           ========================================================= */
+        @media (prefers-reduced-motion: reduce) {
+            html {
+                scroll-behavior: auto;
+            }
+
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- =========================================================
+         NAVIGATION
+         ========================================================= -->
+    <header class="nav">
+        <div class="logo" aria-label="Velyta's Chef's Table">
+            VELYTA'S <b aria-hidden="true">♡</b>
+        </div>
+
+        <nav class="navlinks" aria-label="Main navigation">
+            <button type="button" data-scroll="welcome">WELCOME</button>
+            <button type="button" data-scroll="kitchen">KITCHEN</button>
+            <button type="button" data-scroll="plating">PLATING</button>
+            <button type="button" data-scroll="memories">MEMORIES</button>
+            <button type="button" data-scroll="dinner">DINNER</button>
+        </nav>
+
+        <button
+            class="nav-toggle"
+            id="navToggle"
+            type="button"
+            aria-label="Open navigation menu"
+            aria-expanded="false"
+            aria-controls="mobileNav"
+        >
+            ☰
+        </button>
+    </header>
+
+    <nav class="mobile-nav" id="mobileNav" aria-label="Mobile navigation">
+        <button type="button" data-scroll="welcome">WELCOME</button>
+        <button type="button" data-scroll="kitchen">KITCHEN</button>
+        <button type="button" data-scroll="plating">PLATING</button>
+        <button type="button" data-scroll="memories">MEMORIES</button>
+        <button type="button" data-scroll="dinner">DINNER</button>
+    </nav>
+
+    <main>
+        <!-- =====================================================
+             HERO
+             ===================================================== -->
+        <section class="hero" id="hero">
+            <div class="wrap center">
+                <div class="eyebrow">PRIVATE RESTAURANT • ONE SPECIAL GUEST</div>
+
+                <h1>
+                    VELYTA'S
+                    <span>The Chef's Table</span>
+                </h1>
+
+                <p class="hero-copy">
+                    Welcome to a little restaurant made especially for the chef
+                    who makes ordinary moments taste extraordinary.
+                </p>
+
+                <button class="cta" type="button" data-scroll="welcome">
+                    ENTER THE RESTAURANT
+                </button>
+            </div>
+
+            <div class="pan" aria-hidden="true">🍳</div>
+        </section>
+
+        <!-- =====================================================
+             WELCOME
+             ===================================================== -->
+        <section class="light" id="welcome">
+            <div class="wrap center">
+                <div class="eyebrow">WELCOME, CHEF VELYTA</div>
+
+                <div class="title">
+                    Your kitchen.
+                    <span>My favorite table.</span>
+                </div>
+
+                <p>
+                    Tonight you don't have to cook for everyone.<br>
+                    Tonight, I'm your only guest.<br><br>
+                    But first, Chef... let's make something together.
+                </p>
+
+                <div class="card res">
+                    <small>TONIGHT'S RESERVATION</small>
+                    <strong>VEGA × VELYTA</strong>
+                    <small>TABLE 02 • FOREVER</small>
+                </div>
+
+                <button class="cta" type="button" data-scroll="kitchen">
+                    START TONIGHT'S MENU
+                </button>
+            </div>
+        </section>
+
+        <!-- =====================================================
+             KITCHEN GAME
+             ===================================================== -->
+        <section class="light" id="kitchen">
+            <div class="wrap">
+                <div class="center">
+                    <div class="eyebrow">GAME 01 • KITCHEN PREP</div>
+
+                    <div class="title">
+                        Choose the
+                        <span>ingredients.</span>
+                    </div>
+
+                    <p>
+                        Click at least four ingredients, then press START COOKING.
+                    </p>
+                </div>
+
+                <div class="grid">
+                    <article class="card">
+                        <h2 class="card-title">Pantry</h2>
+
+                        <div
+                            class="ingredients"
+                            id="ingredients"
+                            aria-label="Available ingredients"
+                        ></div>
+
+                        <div
+                            class="selected"
+                            id="selected"
+                            aria-live="polite"
+                        >
+                            Nothing selected yet.
+                        </div>
+
+                        <button
+                            class="btn"
+                            id="cookButton"
+                            type="button"
+                            disabled
+                        >
+                            START COOKING
+                        </button>
+                    </article>
+
+                    <article class="card">
+                        <h2 class="card-title">Stove</h2>
+
+                        <div class="stove" aria-hidden="true">
+                            <div class="flame" id="flame">🔥</div>
+                            <div class="pan2"></div>
+                            <div class="food" id="food">🍳</div>
+                        </div>
+
+                        <div class="status" id="cookStatus" aria-live="polite">
+                            The pan is waiting...
+                        </div>
+                    </article>
+                </div>
+
+                <div class="center">
+                    <button class="cta alt" type="button" data-scroll="recipe">
+                        OPEN SECRET RECIPE
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- =====================================================
+             SECRET RECIPE
+             ===================================================== -->
+        <section class="wine" id="recipe">
+            <div class="wrap">
+                <div class="center">
+                    <div class="eyebrow">THE SECRET RECIPE BOOK</div>
+
+                    <div class="title">
+                        Recipe for
+                        <span>us.</span>
+                    </div>
+
+                    <p>A recipe measured in memories, not grams.</p>
+                </div>
+
+                <article class="recipebook">
+                    <h3>Recipe No. 001 — Us</h3>
+
+                    <div class="recipes">
+                        <div class="recipe">
+                            <strong>1 unexpected hello</strong>
+                            <p>The little ingredient that changed everything.</p>
+                        </div>
+
+                        <div class="recipe">
+                            <strong>2 curious hearts</strong>
+                            <p>Let them slowly discover each other.</p>
+                        </div>
+
+                        <div class="recipe">
+                            <strong>A pinch of laughter</strong>
+                            <p>Best served unexpectedly.</p>
+                        </div>
+
+                        <div class="recipe">
+                            <strong>Long-distance patience</strong>
+                            <p>Stir continuously. Never stop choosing each other.</p>
+                        </div>
+
+                        <div class="recipe">
+                            <strong>Unlimited affection</strong>
+                            <p>Add generously.</p>
+                        </div>
+
+                        <div class="recipe">
+                            <strong>One forever</strong>
+                            <p>Never remove this ingredient.</p>
+                        </div>
+                    </div>
+                </article>
+
+                <div class="center">
+                    <button class="cta" type="button" data-scroll="plating">
+                        CONTINUE TO PLATING
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- =====================================================
+             PLATING GAME
+             ===================================================== -->
+        <section class="dark" id="plating">
+            <div class="wrap">
+                <div class="center">
+                    <div class="eyebrow">GAME 02 • PLATING</div>
+
+                    <div class="title">
+                        Create the
+                        <span>special.</span>
+                    </div>
+
+                    <p>
+                        Click all six ingredients to plate tonight's signature dish.
+                    </p>
+                </div>
+
+                <div class="plategrid">
+                    <div class="foodlist" aria-label="Plating ingredients">
+                        <button type="button" data-plate="🥩">🥩 Steak</button>
+                        <button type="button" data-plate="🥕">🥕 Carrot</button>
+                        <button type="button" data-plate="🥦">🥦 Broccoli</button>
+                        <button type="button" data-plate="🍓">🍓 Strawberry</button>
+                        <button type="button" data-plate="🍋">🍋 Lemon</button>
+                        <button type="button" data-plate="🌿">🌿 Herb</button>
+                    </div>
+
+                    <div>
+                        <div class="platearea">
+                            <div
+                                class="plate"
+                                id="plate"
+                                aria-label="Dinner plate"
+                            ></div>
+                        </div>
+
+                        <div
+                            class="platecount"
+                            id="platecount"
+                            aria-live="polite"
+                        >
+                            0 / 6 ingredients
+                        </div>
+                    </div>
+                </div>
+
+                <div class="center">
+                    <button class="cta" type="button" data-scroll="memories">
+                        SERVE THE MEMORIES
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- =====================================================
+             MEMORIES
+             ===================================================== -->
+        <section class="photos" id="memories">
+            <div class="wrap">
+                <div class="center">
+                    <div class="eyebrow">THE MEMORY FRIDGE</div>
+
+                    <div class="title">
+                        Our little
+                        <span>moments.</span>
+                    </div>
+
+                    <p>Click a photograph.</p>
+                </div>
+
+                <div class="photosgrid">
+                    <figure
+                        class="photo"
+                        data-photo="foto1.jpg"
+                        data-title="Memory #01"
+                        tabindex="0"
+                        role="button"
+                        aria-label="Open Memory 1"
+                    >
+                        <img
+                            src="foto1.jpg"
+                            alt="Memory 1"
+                            loading="lazy"
+                            decoding="async"
+                        >
+                        <figcaption>that day ♡</figcaption>
+                    </figure>
+
+                    <figure
+                        class="photo"
+                        data-photo="foto2.jpg"
+                        data-title="Memory #02"
+                        tabindex="0"
+                        role="button"
+                        aria-label="Open Memory 2"
+                    >
+                        <img
+                            src="foto2.jpg"
+                            alt="Memory 2"
+                            loading="lazy"
+                            decoding="async"
+                        >
+                        <figcaption>you &amp; me</figcaption>
+                    </figure>
+
+                    <figure
+                        class="photo"
+                        data-photo="foto3.jpg"
+                        data-title="Memory #03"
+                        tabindex="0"
+                        role="button"
+                        aria-label="Open Memory 3"
+                    >
+                        <img
+                            src="foto3.jpg"
+                            alt="Memory 3"
+                            loading="lazy"
+                            decoding="async"
+                        >
+                        <figcaption>still us</figcaption>
+                    </figure>
+                </div>
+
+                <div class="center">
+                    <button class="cta" type="button" data-scroll="dinner">
+                        GO TO THE CHEF'S TABLE
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- =====================================================
+             DINNER
+             ===================================================== -->
+        <section class="dinner" id="dinner">
+            <div class="wrap center">
+                <div class="eyebrow">THE CHEF'S TABLE</div>
+
+                <div class="title">
+                    Dinner for
+                    <span>two.</span>
+                </div>
+
+                <div class="table" aria-hidden="true">
+                    <div class="candle">🕯️</div>
+                </div>
+
+                <p>
+                    The kitchen is quiet. The dishes are ready. The lights are low.
+                    <br><br>
+                    There is only one thing left on tonight's menu.
+                </p>
+
+                <button class="cta" id="dessertButton" type="button">
+                    OPEN THE DESSERT MENU
+                </button>
+            </div>
+        </section>
+
+        <!-- =====================================================
+             FINAL
+             ===================================================== -->
+        <section class="final">
+            <div class="wrap center">
+                <div class="eyebrow">THE LAST COURSE</div>
+
+                <div class="title">
+                    The sweetest thing
+                    <span>was never dessert.</span>
+                </div>
+
+                <p>
+                    It was every ordinary day that became special because you were in it.
+                    <br><br>
+                    Thank you for being my favorite chef, my favorite person,
+                    and my favorite place to come home to.
+                </p>
+
+                <div class="signature">Vega ♡ Velyta</div>
+            </div>
+        </section>
+    </main>
+
+    <!-- =========================================================
+         MUSIC
+         ========================================================= -->
+    <button
+        class="music"
+        id="musicBtn"
+        type="button"
+        aria-label="Play background music"
+        aria-pressed="false"
+    >
+        ♪
+    </button>
+
+    <audio id="music" loop preload="metadata">
+        <source src="music.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- =========================================================
+         MODAL
+         ========================================================= -->
+    <div
+        class="popup"
+        id="popup"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="popTitle"
+        aria-hidden="true"
+    >
+        <div class="popupbox">
+            <h2 id="popTitle"></h2>
+            <div id="popBody"></div>
+
+            <button class="close" id="closePopup" type="button">
+                CLOSE
+            </button>
+        </div>
+    </div>
+
+    <noscript>
+        <p style="padding: 20px; text-align: center;">
+            JavaScript perlu diaktifkan untuk menggunakan fitur interaktif website ini.
+        </p>
+    </noscript>
+
+    <script>
+        (() => {
+            "use strict";
+
+            /* =====================================================
+               DOM REFERENCES
+               ===================================================== */
+            const elements = {
+                popup: document.getElementById("popup"),
+                popTitle: document.getElementById("popTitle"),
+                popBody: document.getElementById("popBody"),
+                closePopup: document.getElementById("closePopup"),
+
+                ingredients: document.getElementById("ingredients"),
+                selected: document.getElementById("selected"),
+                cookButton: document.getElementById("cookButton"),
+                cookStatus: document.getElementById("cookStatus"),
+                flame: document.getElementById("flame"),
+                food: document.getElementById("food"),
+
+                plate: document.getElementById("plate"),
+                plateCount: document.getElementById("platecount"),
+
+                music: document.getElementById("music"),
+                musicButton: document.getElementById("musicBtn"),
+
+                navToggle: document.getElementById("navToggle"),
+                mobileNav: document.getElementById("mobileNav")
+            };
+
+            /* =====================================================
+               STATE
+               ===================================================== */
+            const state = {
+                chosenIngredients: new Set(),
+                platedIngredients: 0,
+                isCooking: false,
+                previousFocus: null
+            };
+
+            /* =====================================================
+               NAVIGATION
+               ===================================================== */
+            function scrollToSection(id) {
+                const section = document.getElementById(id);
+
+                if (!section) {
+                    return;
+                }
+
+                section.scrollIntoView({
+                    behavior: "smooth",
+                    block: "start"
+                });
+
+                closeMobileNavigation();
+            }
+
+            function closeMobileNavigation() {
+                elements.mobileNav.classList.remove("open");
+                elements.navToggle.setAttribute("aria-expanded", "false");
+                elements.navToggle.textContent = "☰";
+                elements.navToggle.setAttribute(
+                    "aria-label",
+                    "Open navigation menu"
+                );
+            }
+
+            document.querySelectorAll("[data-scroll]").forEach((button) => {
+                button.addEventListener("click", () => {
+                    scrollToSection(button.dataset.scroll);
+                });
+            });
+
+            elements.navToggle.addEventListener("click", () => {
+                const isOpen = elements.mobileNav.classList.toggle("open");
+
+                elements.navToggle.setAttribute(
+                    "aria-expanded",
+                    String(isOpen)
+                );
+
+                elements.navToggle.textContent = isOpen ? "×" : "☰";
+                elements.navToggle.setAttribute(
+                    "aria-label",
+                    isOpen ? "Close navigation menu" : "Open navigation menu"
+                );
+            });
+
+            /* =====================================================
+               KITCHEN GAME
+               ===================================================== */
+            const ingredientData = [
+                ["🥩", "Steak"],
+                ["🥕", "Carrot"],
+                ["🥦", "Broccoli"],
+                ["🍋", "Lemon"],
+                ["🍓", "Strawberry"],
+                ["🌿", "Herb"],
+                ["🧄", "Garlic"],
+                ["🍄", "Mushroom"],
+                ["🧈", "Butter"]
+            ];
+
+            function updateIngredientUI() {
+                const selectedIngredients = [...state.chosenIngredients];
+
+                elements.selected.textContent = selectedIngredients.length
+                    ? selectedIngredients.join(" • ")
+                    : "Nothing selected yet.";
+
+                elements.cookButton.disabled = selectedIngredients.length < 4;
+            }
+
+            function createIngredientButton([emoji, name]) {
+                const button = document.createElement("button");
+
+                button.type = "button";
+                button.className = "ing";
+                button.dataset.ingredient = name;
+                button.setAttribute("aria-pressed", "false");
+
+                button.innerHTML = `
+                    <b aria-hidden="true">${emoji}</b>
+                    <small>${name}</small>
+                `;
+
+                button.addEventListener("click", () => {
+                    if (state.chosenIngredients.has(name)) {
+                        state.chosenIngredients.delete(name);
+                        button.classList.remove("active");
+                        button.setAttribute("aria-pressed", "false");
+                    } else {
+                        state.chosenIngredients.add(name);
+                        button.classList.add("active");
+                        button.setAttribute("aria-pressed", "true");
+                    }
+
+                    updateIngredientUI();
+                });
+
+                return button;
+            }
+
+            ingredientData.forEach((ingredient) => {
+                elements.ingredients.appendChild(
+                    createIngredientButton(ingredient)
+                );
+            });
+
+            function cook() {
+                if (state.isCooking) {
+                    return;
+                }
+
+                if (state.chosenIngredients.size < 4) {
+                    elements.cookStatus.textContent =
+                        "Chef says: choose at least 4 ingredients!";
+                    return;
+                }
+
+                state.isCooking = true;
+                elements.cookButton.disabled = true;
+
+                elements.flame.classList.add("on");
+                elements.food.classList.remove("show");
+                elements.cookStatus.textContent = "🔥 Cooking...";
+
+                window.setTimeout(() => {
+                    elements.flame.classList.remove("on");
+                    elements.food.classList.add("show");
+
+                    elements.cookStatus.textContent =
+                        "✨ Perfect! Chef Velyta approves.";
+
+                    state.isCooking = false;
+                    elements.cookButton.disabled = false;
+
+                    showModal(
+                        "CHEF VELYTA APPROVES 👩‍🍳",
+                        `
+                            <p>
+                                The special dish is ready.
+                                But the best ingredient was always a little bit of love.
+                            </p>
+                        `
+                    );
+                }, 1200);
+            }
+
+            elements.cookButton.addEventListener("click", cook);
+
+            /* =====================================================
+               PLATING GAME
+               ===================================================== */
+            function addPlateFood(button) {
+                if (state.platedIngredients >= 6 || button.disabled) {
+                    return;
+                }
+
+                const food = document.createElement("div");
+
+                food.className = "platefood";
+                food.textContent = button.dataset.plate;
+                food.style.left = `${15 + Math.random() * 65}%`;
+                food.style.top = `${15 + Math.random() * 65}%`;
+
+                elements.plate.appendChild(food);
+
+                button.disabled = true;
+                state.platedIngredients += 1;
+
+                elements.plateCount.textContent =
+                    `${state.platedIngredients} / 6 ingredients`;
+
+                if (state.platedIngredients === 6) {
+                    showModal(
+                        "PLATING COMPLETE 🍽️",
+                        `
+                            <p>
+                                Chef Velyta approves.
+                                Tonight's special is ready for the most important table.
+                            </p>
+                        `
+                    );
+                }
+            }
+
+            document.querySelectorAll("[data-plate]").forEach((button) => {
+                button.addEventListener("click", () => addPlateFood(button));
+            });
+
+            /* =====================================================
+               MEMORY PHOTOS
+               ===================================================== */
+            function openPhoto(src, title) {
+                showModal(
+                    title,
+                    `
+                        <img
+                            class="popup-image"
+                            src="${src}"
+                            alt="${title}"
+                        >
+                        <p>
+                            One little memory from our favorite table.
+                        </p>
+                    `
+                );
+            }
+
+            document.querySelectorAll("[data-photo]").forEach((photo) => {
+                const open = () => {
+                    openPhoto(photo.dataset.photo, photo.dataset.title);
+                };
+
+                photo.addEventListener("click", open);
+
+                photo.addEventListener("keydown", (event) => {
+                    if (event.key === "Enter" || event.key === " ") {
+                        event.preventDefault();
+                        open();
+                    }
+                });
+            });
+
+            /* =====================================================
+               DESSERT
+               ===================================================== */
+            document
+                .getElementById("dessertButton")
+                .addEventListener("click", () => {
+                    showModal(
+                        "DESSERT MENU 🍰",
+                        `
+                            <p>
+                                Tonight: your favorite dessert, two forks,
+                                warm lights, and a conversation that lasts
+                                much longer than dinner.
+                            </p>
+                            <p>
+                                <strong>
+                                    Chef's recommendation: stay a little longer.
+                                </strong>
+                            </p>
+                        `
+                    );
+                });
+
+            /* =====================================================
+               MODAL
+               ===================================================== */
+            function showModal(title, body) {
+                state.previousFocus = document.activeElement;
+
+                elements.popTitle.textContent = title;
+                elements.popBody.innerHTML = body;
+
+                elements.popup.classList.add("open");
+                elements.popup.setAttribute("aria-hidden", "false");
+                document.body.classList.add("modal-open");
+
+                elements.closePopup.focus();
+            }
+
+            function closeModal() {
+                elements.popup.classList.remove("open");
+                elements.popup.setAttribute("aria-hidden", "true");
+                document.body.classList.remove("modal-open");
+
+                if (state.previousFocus instanceof HTMLElement) {
+                    state.previousFocus.focus();
+                }
+            }
+
+            elements.closePopup.addEventListener("click", closeModal);
+
+            elements.popup.addEventListener("click", (event) => {
+                if (event.target === elements.popup) {
+                    closeModal();
+                }
+            });
+
+            document.addEventListener("keydown", (event) => {
+                if (event.key === "Escape" && elements.popup.classList.contains("open")) {
+                    closeModal();
+                }
+            });
+
+            /* =====================================================
+               MUSIC PLAYER
+               ===================================================== */
+            function updateMusicButton(isPlaying) {
+                elements.musicButton.textContent = isPlaying ? "❚❚" : "♪";
+                elements.musicButton.setAttribute(
+                    "aria-pressed",
+                    String(isPlaying)
+                );
+                elements.musicButton.setAttribute(
+                    "aria-label",
+                    isPlaying
+                        ? "Pause background music"
+                        : "Play background music"
+                );
+            }
+
+            elements.musicButton.addEventListener("click", async () => {
+                if (elements.music.paused) {
+                    try {
+                        await elements.music.play();
+                        updateMusicButton(true);
+                    } catch {
+                        elements.cookStatus.textContent =
+                            "Music could not be played. Please check music.mp3.";
+                    }
+                } else {
+                    elements.music.pause();
+                    updateMusicButton(false);
+                }
+            });
+
+            elements.music.addEventListener("ended", () => {
+                updateMusicButton(false);
+            });
+        })();
+    </script>
+</body>
+</html>
